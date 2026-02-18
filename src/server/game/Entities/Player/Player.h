@@ -479,8 +479,9 @@ static_assert((PLAYER_FIELD_BYTES_2_OFFSET_OVERRIDE_SPELLS_ID & 1) == 0, "PLAYER
 
 constexpr uint8 PLAYER_BYTES_2_OVERRIDE_SPELLS_UINT16_OFFSET = PLAYER_FIELD_BYTES_2_OFFSET_OVERRIDE_SPELLS_ID / 2;
 
+// KNOWN_TITLES is stored in 4 uint64 values, so we can represent 256 title bits (4 * 64).
 constexpr uint8 KNOWN_TITLES_SIZE = 4;
-constexpr uint32 MAX_TITLE_INDEX = KNOWN_TITLES_SIZE * sizeof(uint64); // 4 uint64 fields
+constexpr uint32 MAX_TITLE_INDEX = KNOWN_TITLES_SIZE * 64;
 
 // used in PLAYER_FIELD_BYTES values
 enum PlayerFieldByteFlags
