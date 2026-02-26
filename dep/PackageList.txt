@@ -33,8 +33,8 @@ gSOAP (a portable development toolkit for C and C++ XML Web services and XML dat
   Version: 2.8.117
 
 jemalloc (a general-purpose scalable concurrent malloc-implementation)
-  http://www.canonware.com/jemalloc/
-  Version: 5.2.1
+  https://github.com/jemalloc/jemalloc
+  Version: 5.3.0
 
 libMPQ (a library for reading MPQ files)
   https://github.com/mbroemme/libmpq/
