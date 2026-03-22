@@ -5839,7 +5839,7 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
         crit = roll_chance_f(GetCritChanceFor(caster, target));
 
     if (crit)
-        damage = Unit::SpellCriticalDamageBonus(caster, m_spellInfo, damage);
+        damage = Unit::SpellCriticalDamageBonus(caster, m_spellInfo, damage, true);
 
     uint32 unmitigatedDamage = damage;
 
@@ -5928,7 +5928,7 @@ void AuraEffect::HandlePeriodicHealthLeechAuraTick(Unit* target, Unit* caster) c
         crit = roll_chance_f(GetCritChanceFor(caster, target));
 
     if (crit)
-        damage = Unit::SpellCriticalDamageBonus(caster, m_spellInfo, damage);
+        damage = Unit::SpellCriticalDamageBonus(caster, m_spellInfo, damage, true);
 
     uint32 unmitigatedDamage = damage;
 

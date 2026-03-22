@@ -7003,7 +7003,7 @@ float Unit::SpellCritChanceTaken(Unit const* caster, SpellInfo const* spellInfo,
     return std::max(crit_chance, 0.0f);
 }
 
-/*static*/ uint32 Unit::SpellCriticalDamageBonus(Unit const* caster, SpellInfo const* spellProto, uint32 damage)
+/*static*/ uint32 Unit::SpellCriticalDamageBonus(Unit const* caster, SpellInfo const* spellProto, uint32 damage, bool periodicDamage /*= false*/)
 {
     // Calculate critical bonus
     int32 crit_bonus = damage;
@@ -7011,13 +7011,21 @@ float Unit::SpellCritChanceTaken(Unit const* caster, SpellInfo const* spellInfo,
 
     switch (spellProto->DmgClass)
     {
-        case SPELL_DAMAGE_CLASS_MELEE:                      // for melee based spells is 100%
-        case SPELL_DAMAGE_CLASS_RANGED:
-            /// @todo write here full calculation for melee/ranged spells
+        // Spells which are either marked as ranged or melee damage, will deal 100% additional damage
+        case SPELL_DAMAGE_CLASS_MELEE:
             crit_bonus += damage;
             break;
+        case SPELL_DAMAGE_CLASS_RANGED:
+            // Ranged spells which have magic periodic damage effect on the other hand, only deal 50% damage, just like spells
+            // This is a very specific case that is currently only known for Hunter spells, such as Serpent Sting and Black Arrow
+            if (periodicDamage && (spellProto->GetSchoolMask() & SPELL_SCHOOL_MASK_MAGIC) != 0)
+                crit_bonus += damage / 2;
+            else
+                crit_bonus += damage;
+            break;
         default:
-            crit_bonus += damage / 2;                       // for spells is 50%
+            // Magic spells will simply deal 50% additional crit damage
+            crit_bonus += damage / 2;
             break;
     }
 
