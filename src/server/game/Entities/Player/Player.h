@@ -22,6 +22,7 @@
 #include "CUFProfile.h"
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
+#include "EnumFlag.h"
 #include "EquipmentSet.h"
 #include "GroupReference.h"
 #include "ItemDefines.h"
@@ -83,6 +84,8 @@ class ReputationMgr;
 class SpellCastTargets;
 class TradeData;
 
+enum CharacterFlags : int32;
+enum CharacterFlags2 : int32;
 enum InventoryType : uint8;
 enum ItemClass : uint8;
 enum LootError : uint8;
@@ -402,6 +405,7 @@ constexpr uint8 MAX_DRUNKEN = 4;
 
 enum PlayerFlags
 {
+    PLAYER_FLAGS_NONE                               = 0x00000000,
     PLAYER_FLAGS_GROUP_LEADER                       = 0x00000001,
     PLAYER_FLAGS_AFK                                = 0x00000002,
     PLAYER_FLAGS_DND                                = 0x00000004,
@@ -2360,8 +2364,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         // Void Storage
         bool IsVoidStorageUnlocked() const { return HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_UNLOCKED); }
-        void UnlockVoidStorage() { SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_UNLOCKED); }
-        void LockVoidStorage() { RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_VOID_UNLOCKED); }
+        void UnlockVoidStorage();
+        void LockVoidStorage();
         uint8 GetNextVoidStorageFreeSlot() const;
         uint8 GetNumOfVoidStorageFreeSlots() const;
         uint8 AddVoidStorageItem(VoidStorageItem const& item);
@@ -2552,6 +2556,23 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         uint32 m_ExtraFlags;
 
+    private:
+        EnumFlag<CharacterFlags> _characterFlags;
+        EnumFlag<CharacterFlags2> _characterFlags2;
+    public:
+        EnumFlag<CharacterFlags> GetCharacterFlags() const { return _characterFlags; }
+        void AddCharacterFlag(CharacterFlags flag) { _characterFlags |= flag; }
+        void RemoveCharacterFlag(CharacterFlags flag) { _characterFlags &= ~flag; }
+        bool HasCharacterFlag(CharacterFlags flag) const { return _characterFlags.HasFlag(flag); }
+
+        EnumFlag<CharacterFlags2> GetCharacterFlags2() const { return _characterFlags2; }
+        void AddCharacterFlag(CharacterFlags2 flag) { _characterFlags2 |= flag; }
+        void RemoveCharacterFlag(CharacterFlags2 flag) { _characterFlags2 &= ~flag; }
+        bool HasCharacterFlag(CharacterFlags2 flag) const { return _characterFlags2.HasFlag(flag); }
+
+        void InitializePlayerFlags();
+
+    protected:
         QuestStatusMap m_QuestStatus;
         QuestStatusSaveMap m_QuestStatusSave;
 

@@ -20,6 +20,7 @@
 
 #include "Define.h"
 #include "DetourNavMesh.h"
+#include "EnumFlag.h"
 
 float const GROUND_HEIGHT_TOLERANCE = 0.05f; // Extra tolerance to z position to check if it is in air or on ground.
 constexpr float Z_OFFSET_FIND_HEIGHT = 1.5f;
@@ -831,6 +832,8 @@ enum CharacterFlags : int32
     CHARACTER_FLAG_COMPENSATE_FOR_SPELLS                        = 0x40000000  // Compensate for spells
 };
 
+DEFINE_ENUM_FLAG(CharacterFlags);
+
 enum CharacterFlags2 : int32
 {
     CHARACTER_FLAG_2_NONE                                       = 0x00000000,
@@ -866,6 +869,8 @@ enum CharacterFlags2 : int32
     CHARACTER_FLAG_2_LOW_LEVEL_RAID_ENABLED                     = 0x20000000, // The player can join raids even if he's below the min raid level
     CHARACTER_FLAG_2_AUTO_DECLINE_GUILD                         = 0x40000000  // The player will automatically decline guild invites
 };
+
+DEFINE_ENUM_FLAG(CharacterFlags2);
 
 enum CharacterSlot
 {
