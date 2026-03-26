@@ -2730,9 +2730,13 @@ void Spell::TargetInfo::DoDamageAndTriggers(Spell* spell)
         std::unique_ptr<HealInfo> healInfo;
         if (spell->m_healing > 0)
         {
+            // SPELL_EFFECT_HEAL_PCT must never crit, even if other spell effects do crit. As of 4.3.4.15595,
+            // this spell effect does not share other healing effects in any spell so we can use this rule here
+            bool critPrevented = IsCrit && spell->m_spellInfo->HasEffect(SPELL_EFFECT_HEAL_PCT);
+
             hasHealing = true;
             uint32 addhealth = spell->m_healing;
-            if (IsCrit)
+            if (IsCrit && !critPrevented)
             {
                 ProcHitMask |= PROC_HIT_CRITICAL;
                 addhealth = Unit::SpellCriticalHealingBonus(caster, addhealth);
@@ -2741,7 +2745,7 @@ void Spell::TargetInfo::DoDamageAndTriggers(Spell* spell)
                 ProcHitMask |= PROC_HIT_NORMAL;
 
             healInfo = std::make_unique<HealInfo>(caster, spell->unitTarget, addhealth, spell->m_spellInfo, spell->m_spellInfo->GetSchoolMask());
-            caster->HealBySpell(*healInfo, IsCrit);
+            caster->HealBySpell(*healInfo, IsCrit && !critPrevented);
             spell->unitTarget->GetThreatManager().ForwardThreatForAssistingMe(caster, float(healInfo->GetEffectiveHeal()) * 0.5f, spell->m_spellInfo);
             spell->m_healing = healInfo->GetEffectiveHeal();
 
